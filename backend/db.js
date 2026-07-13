@@ -3,8 +3,8 @@ const mysql = require("mysql2");
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "77Sapna@88",      // Agar password hai to yahan likho
-  database: "todoapp"
+  password: "77Sapna@88",
+  database:"todoapp",
 });
 
 db.connect((err) => {
@@ -12,7 +12,7 @@ db.connect((err) => {
     console.log("Database Connection Failed");
     console.log(err);
   } else {
-    console.log("Database Connected");
+    console.log("Database Connected Successfully");
   }
 });
 

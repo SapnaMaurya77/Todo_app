@@ -4,105 +4,136 @@ const db = require("./db");
 
 const app = express();
 
+
+// Middleware
 app.use(cors());
 app.use(express.json());
 
 
-// ====================== GET ALL TASKS ======================
+
+// ================= GET ALL TASKS =================
+
 app.get("/tasks", (req, res) => {
-  db.query("SELECT * FROM tasks", (err, result) => {
-    if (err) {
-      return res.status(500).json(err);
-    }
 
-    res.json(result);
-  });
-});
+    db.query("SELECT * FROM tasks", (err, result) => {
 
+        if (err) {
+            console.log(err);
+            res.status(500).send(err);
+        }
+        else {
+            res.json(result);
+        }
 
-// ====================== ADD TASK ======================
-app.post("/tasks", (req, res) => {
-
-  const { title, status, dueDate } = req.body;
-
-  const sql = "INSERT INTO tasks(title, status, dueDate) VALUES (?, ?, ?)";
-
-  db.query(sql, [title, status, dueDate], (err, result) => {
-
-    if (err) {
-      return res.status(500).json(err);
-    }
-
-    res.json({
-      message: "Task Added Successfully"
     });
 
-  });
-
 });
-app.get("/tasks", (req, res) => {
-  db.query("SELECT * FROM tasks", (err, result) => {
-    if (err) {
-      return res.status(500).json(err);
-    }
 
-    res.json(result);
-  });
-});
+
+
+
+// ================= ADD TASK =================
+
 app.post("/tasks", (req, res) => {
 
-  const { title, status, dueDate } = req.body;
+    const { title, status } = req.body;
 
-  const sql = "INSERT INTO tasks(title, status, dueDate) VALUES (?, ?, ?)";
 
-  db.query(sql, [title, status, dueDate], (err, result) => {
+    const sql = 
+    "INSERT INTO tasks(title,status) VALUES(?,?)";
 
-    if (err) {
-      return res.status(500).json(err);
-    }
 
-    res.json("Task Added Successfully");
+    db.query(sql, [title, status], (err, result) => {
 
-  });
+        if (err) {
+            console.log(err);
+            res.status(500).send(err);
+        }
+        else {
+            res.json({
+                message: "Task Added Successfully"
+            });
+        }
 
-});
-app.put("/tasks/:id", (req, res) => {
-
-  const id = req.params.id;
-  const { title, status, dueDate } = req.body;
-
-  const sql = "UPDATE tasks SET title=?, status=?, dueDate=? WHERE id=?";
-
-  db.query(sql, [title, status, dueDate, id], (err, result) => {
-
-    if (err) {
-      return res.status(500).json(err);
-    }
-
-    res.json("Task Updated Successfully");
-
-  });
+    });
 
 });
+
+
+
+
+// ================= DELETE TASK =================
+
 app.delete("/tasks/:id", (req, res) => {
 
-  const id = req.params.id;
+    const id = req.params.id;
 
-  const sql = "DELETE FROM tasks WHERE id=?";
 
-  db.query(sql, [id], (err, result) => {
+    db.query(
+        "DELETE FROM tasks WHERE id=?",
+        [id],
 
-    if (err) {
-      return res.status(500).json(err);
-    }
+        (err, result) => {
 
-    res.json("Task Deleted Successfully");
+            if (err) {
+                console.log(err);
+                res.status(500).send(err);
+            }
+            else {
+                res.json({
+                    message: "Task Deleted Successfully"
+                });
+            }
 
-  });
+        }
+    );
 
 });
 
-// ====================== SERVER ======================
+
+
+
+// ================= UPDATE TASK =================
+
+app.put("/tasks/:id", (req, res) => {
+
+    const id = req.params.id;
+
+    const { title, status } = req.body;
+
+
+    const sql =
+    "UPDATE tasks SET title=?, status=? WHERE id=?";
+
+
+    db.query(
+        sql,
+        [title, status, id],
+
+        (err, result) => {
+
+            if (err) {
+                console.log(err);
+                res.status(500).send(err);
+            }
+            else {
+                res.json({
+                    message:"Task Updated Successfully"
+                });
+            }
+
+        }
+    );
+
+});
+
+
+
+
+// SERVER START
+
 app.listen(5000, () => {
-  console.log("Server is running on port 5000");
+
+    console.log("Server running on port 5000");
+
 });
